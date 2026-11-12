@@ -13,7 +13,7 @@ Shows subscription quota usage in the sidebar footer, directly above Settings: n
 
 `GET /api/sub-limits/providers` serves the normalized snapshot; `?refresh=1` forces a native refresh for every supported account. `GET` and `HEAD` only (`405` otherwise).
 
-The route is registered on `ctx.webServer` and gated by `ctx.connection.requestRejection(req)`; a missing `connection` service fails closed with `503`. A native read that cannot produce a snapshot answers `502` with `code: "NATIVE_UNAVAILABLE"`, a null timestamp, and an empty report list, so the browser keeps its previous data.
+The route is registered on `ctx.webServer` and gated by `ctx.connection.requestRejection(req)`; a missing `connection` service fails closed with `503`. A failed native read answers `200` with `ok: false` and `code: "NATIVE_UNAVAILABLE"`, keeping the previous snapshot marked stale, so the browser keeps its previous data. `502` with a null timestamp and an empty report list is returned only on an unexpected handler error.
 
 Sanitized snapshots, without credentials or raw provider errors, are atomically stored in `$DSH_HOME/sub-limits-provider-usage.json` with private file permissions.
 
