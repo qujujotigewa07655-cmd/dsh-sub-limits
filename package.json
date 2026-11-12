@@ -1,7 +1,7 @@
 {
   "name": "dsh-sub-limits",
   "version": "1.1.0",
-  "description": "Tracks 5-hour and 7-day subscription usage limits across active DSH model routes, including the OpenCode Go plan.",
+  "description": "Shows provider subscription quota usage from native DSH oauth-subs accounts and the OpenCode Go plan in the sidebar.",
   "keywords": [
     "deepseek",
     "deepseek-harness",

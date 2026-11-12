@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Subscription Limits",
-    "description": "Tracks 5-hour and 7-day subscription usage against configurable request or token caps on every active model route."
+    "title": "Provider usage",
+    "description": "Shows provider subscription quota usage from native DSH oauth-subs accounts and the OpenCode Go plan in the sidebar."
   }
 }
