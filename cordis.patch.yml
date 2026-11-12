@@ -1,0 +1,10 @@
+- insert:
+    - id: dsh-sub-limits
+      name: dsh-sub-limits
+      config:
+        mode: requests
+        blockMode: rolling
+        fiveHourCap: 0
+        weeklyCap: 0
+        historyDays: 8
+        pollMs: 5000

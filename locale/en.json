@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Subscription Limits",
+    "description": "Tracks 5-hour and 7-day subscription usage against configurable request or token caps on every active model route."
+  }
+}

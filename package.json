@@ -1,0 +1,53 @@
+{
+  "name": "dsh-sub-limits",
+  "version": "1.1.0",
+  "description": "Tracks 5-hour and 7-day subscription usage limits across active DSH model routes, including the OpenCode Go plan.",
+  "keywords": [
+    "deepseek",
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "usage",
+    "limits",
+    "quota",
+    "subscription"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/index.js",
+    "lib/client.js",
+    "lib/provider-usage.js",
+    "cordis.patch.yml",
+    "locale/en.json",
+    "locale/ru.json",
+    "icon.svg",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [],
+      "external": [
+        "react"
+      ]
+    },
+    "manifestVersion": 1
+  }
+}
