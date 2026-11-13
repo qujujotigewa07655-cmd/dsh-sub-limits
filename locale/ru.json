@@ -1,6 +1,6 @@
 {
   "meta": {
     "title": "Расход провайдеров",
-    "description": "Показывает расход квот подписки из нативных аккаунтов DSH oauth-subs и плана OpenCode Go на боковой панели."
+    "description": "Показывает на боковой панели расход квот подписки: нативные аккаунты DSH oauth-subs, план OpenCode Go, остаток OpenRouter и месячные кредиты Alibaba Token Plan."
   }
 }
