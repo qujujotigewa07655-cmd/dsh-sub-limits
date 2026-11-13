@@ -1,13 +1,14 @@
 # dsh-sub-limits
 
-Shows subscription quota usage in the sidebar footer, directly above Settings: native DSH accounts read through the running `dsh-plugin-oauth-subs` controller and, when a key is available, the OpenCode Go plan.
+Shows subscription quota usage in the sidebar footer, directly above Settings: native DSH accounts read through the running `dsh-plugin-oauth-subs` controller and, when a key is available, the OpenCode Go plan and the OpenRouter balance.
 
 ## What it shows
 
 - **Native DSH accounts.** The host reads provider-metered quotas from the running `dsh-plugin-oauth-subs` controller through its authenticated local API, without invoking OMP, reading OMP accounts, or creating a second authentication controller.
 - **OpenCode Go.** The host reads the subscription directly from its own gateway with the `OPENCODE_API_KEY` credential, resolved through the credentials service with the process environment as a fallback.
 - **Independent pools.** Antigravity Gemini and Claude/GPT pools stay separate, and each account is its own row. Daily windows are labeled `24H`, not `5H`.
-- **Known gaps stay visible.** Unavailable or unreported quota is shown as a dash, never as unlimited or zero usage. OpenRouter has no account-quota family in the native controller, so a configured OpenRouter provider is explicitly shown as unsupported/unknown instead of importing a balance from OMP. Ollama accounts whose native usage endpoint supplies no usable quota windows are similarly unknown.
+- **OpenRouter.** The host reads the remaining money straight from OpenRouter with the `OPENROUTER_API_KEY` credential, resolved through the credentials service with the process environment as a fallback. The account balance is the headline number; a per-key spending limit is shown next to it, never instead of it.
+- **Known gaps stay visible.** Unavailable or unreported quota is shown as a dash, never as unlimited or zero usage. Ollama accounts whose native usage endpoint supplies no usable quota windows are unknown.
 
 ## HTTP endpoint
 
@@ -29,6 +30,8 @@ The browser half registers into `sidebar.footer.action`. The compact rail shows 
 
 OpenCode Go supplies rolling five-hour, weekly and monthly spend meters in micro-cents from `GET https://opencode.ai/console/api/go/status`, with `GET https://opencode.ai/zen/go/v1/usage` as the percent-and-reset fallback for keys the console route rejects. A rejected key and no stored key are different: the first stays visible as unknown, the second shows no row at all. A failed read keeps the preceding percentages marked stale, and the key itself is never written to the snapshot.
 
+OpenRouter supplies two dollar balances from `GET https://openrouter.ai/api/v1/credits` and `GET https://openrouter.ai/api/v1/key`. The account balance is `total_credits - total_usage`, the money actually left on the account; the key balance is `limit_remaining` against the key's own `limit`, a narrower cap that only some keys carry. Both are listed in the expanded row with their used/limit amounts, the account balance first. Either route may fail on its own and the other still reports; a key without a limit reports the account balance alone. OpenRouter is read only when the provider is configured, and the same absent/unknown/stale rules as OpenCode Go apply.
+
 ## Install
 
 ```sh
@@ -36,4 +39,4 @@ dsh plugin --profile web add link:/root/DSH/dsh-sub-limits
 dsh --profile web --dump-config
 ```
 
-Native account quotas require `dsh-plugin-oauth-subs` in the same profile; without a stored `OPENCODE_API_KEY`, the OpenCode Go row is simply absent.
+Native account quotas require `dsh-plugin-oauth-subs` in the same profile; without a stored `OPENCODE_API_KEY`, the OpenCode Go row is simply absent, and without a stored `OPENROUTER_API_KEY`, the OpenRouter row is simply absent.
