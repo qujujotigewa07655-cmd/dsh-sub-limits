@@ -1,6 +1,6 @@
 {
   "meta": {
     "title": "Provider usage",
-    "description": "Shows provider subscription quota usage in the sidebar: native DSH oauth-subs accounts, the OpenCode Go plan, the OpenRouter balance and the Alibaba Token Plan monthly credits."
+    "description": "Shows provider subscription quota usage in the sidebar: native DSH oauth-subs accounts, the OpenCode Go plan, the OpenRouter balance, the Alibaba Token Plan monthly credits and the DeepSeek balance with the off-peak pricing window."
   }
 }

@@ -1,6 +1,6 @@
 # dsh-sub-limits
 
-Shows subscription quota usage in the sidebar footer, directly above Settings: native DSH accounts read through the running `dsh-plugin-oauth-subs` controller and, when a key is available, the OpenCode Go plan, the OpenRouter balance and the Alibaba Token Plan monthly credits.
+Shows subscription quota usage in the sidebar footer, directly above Settings: native DSH accounts read through the running `dsh-plugin-oauth-subs` controller and, when a key is available, the OpenCode Go plan, the OpenRouter balance, the Alibaba Token Plan monthly credits and the DeepSeek key balance with the current off-peak pricing window.
 
 ## What it shows
 
@@ -9,6 +9,7 @@ Shows subscription quota usage in the sidebar footer, directly above Settings: n
 - **Independent pools.** Antigravity Gemini and Claude/GPT pools stay separate, and each account is its own row. Daily windows are labeled `24H`, not `5H`.
 - **OpenRouter.** The host reads the remaining money straight from OpenRouter with the `OPENROUTER_API_KEY` credential, resolved through the credentials service with the process environment as a fallback. The account balance is the headline number; a per-key spending limit is shown next to it, never instead of it.
 - **Alibaba Token Plan.** The host reads the monthly credit quota through the Bailian console gateway with the `bl` CLI over a console login. The tier's monthly total is the headline limit; used and remaining credits are shown in the expanded row.
+- **DeepSeek.** The host reads the remaining key balance, with the granted and topped-up parts, straight from `https://api.deepseek.com/user/balance` with the `DEEPSEEK_API_KEY` credential, and labels the current pricing window as `peak` or `off-peak`.
 - **Known gaps stay visible.** Unavailable or unreported quota is shown as a dash, never as unlimited or zero usage. Ollama accounts whose native usage endpoint supplies no usable quota windows are unknown.
 
 ## HTTP endpoint
@@ -35,6 +36,8 @@ OpenRouter supplies two dollar balances from `GET https://openrouter.ai/api/v1/c
 
 Alibaba Token Plan supplies a monthly credit quota through the Bailian console gateway, read with the `bl` CLI over an authenticated console session: `zeldaHttp.apikeyMgr./tokenplan/personal/api/v2/usage`, `…/subscription` and `…/quota-config` on the `ap-southeast-1` international site. The reported `per1MonthPercentage` is a fraction of the month rather than a percent, so it is multiplied by 100; the tier's `monthly` total from `quota-config`, matched by the subscription `specCode`, turns it into used and remaining credits against the `30D` window with its reset countdown. The model API key alone cannot read this quota — the inference gateway answers `404` and the console host redirects — so a console login is required, and an expired session keeps the last reading marked stale. A missing CLI leaves the row absent, and the provider is read only when it is configured.
 
+DeepSeek supplies the key balance from `GET https://api.deepseek.com/user/balance`. `total_balance` is the headline number; `granted_balance` and `topped_up_balance` are listed beside it when reported. Peak hours are `01:00–04:00` and `06:00–10:00` UTC, Monday through Friday; every other hour, weekends included, is off-peak at half the peak price. The row carries a `peak` or `off-peak` chip with a countdown to the next change. Chinese public holidays are off-peak in full but are not in the panel's calendar, so on a holiday the chip can say `peak` while the provider bills off-peak. DeepSeek is read only when the provider is configured, and the same absent/unknown/stale rules as OpenCode Go apply.
+
 ## Install
 
 ```sh
@@ -42,4 +45,4 @@ dsh plugin --profile web add link:/root/DSH/dsh-sub-limits
 dsh --profile web --dump-config
 ```
 
-Native account quotas require `dsh-plugin-oauth-subs` in the same profile; without a stored `OPENCODE_API_KEY`, the OpenCode Go row is simply absent, and without a stored `OPENROUTER_API_KEY`, the OpenRouter row is simply absent. The Alibaba Token Plan row additionally needs `bailian-cli` (`npm install -g bailian-cli`) and a console login performed in a browser on the host (`bl auth login --console --no-browser --console-site international`); the model API key alone cannot read the plan quota.
+Native account quotas require `dsh-plugin-oauth-subs` in the same profile; without a stored `OPENCODE_API_KEY`, the OpenCode Go row is simply absent, and without a stored `OPENROUTER_API_KEY`, the OpenRouter row is simply absent; without a stored `DEEPSEEK_API_KEY`, the DeepSeek row is simply absent. The Alibaba Token Plan row additionally needs `bailian-cli` (`npm install -g bailian-cli`) and a console login performed in a browser on the host (`bl auth login --console --no-browser --console-site international`); the model API key alone cannot read the plan quota.
